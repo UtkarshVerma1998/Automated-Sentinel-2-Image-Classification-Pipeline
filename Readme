@@ -1,1 +1,129 @@
+# 🛰️ Automated Sentinel-2 Image Classification Pipeline
+
+> Teaching a computer to look at satellite photos of the Earth and say what's on the ground — forests, rivers, farms, cities, and more.
+
+This project takes **real satellite images** of any place on Earth and automatically labels what each part of the image is (forest, water, crop land, residential area, etc.) using deep learning.
+
+---
+
+## 🌍 What does this project do? (in simple terms)
+
+Imagine you point at a spot on the map and ask: *"What's down there?"*
+
+This pipeline answers that automatically:
+
+1. **You pick a location** (a box on the map) and a **date range**.
+2. The program **downloads a real satellite photo** of that area from Microsoft's free satellite database.
+3. It **cuts the big photo into small square tiles**.
+4. A trained AI model **looks at each tile** and says what it is — forest, river, farmland, city, etc.
+5. It **shows you the results** as a labeled grid of images.
+
+No manual downloading, no manual labeling — the whole thing runs end to end.
+
+---
+
+## 🧠 The AI behind it
+
+I trained two different models on a well-known satellite image dataset (**EuroSAT**) and compared them:
+
+| Model | What it is | How accurate? |
+|-------|-----------|---------------|
+| 🥇 **ResNet** (custom) | A deeper network that uses "skip connections" to learn better | **93.15%** ✅ |
+| 🥈 **CNN** (baseline) | A simpler network, used for comparison | 80.72% |
+
+**Takeaway:** The ResNet was about **12% more accurate** than the simple CNN — which shows why modern "residual" networks work so well for image tasks.
+
+---
+
+## 📸 What can it recognize?
+
+The model sorts each piece of land into one of **10 categories:**
+
+🌾 Annual Crop &nbsp;&nbsp; 🌲 Forest &nbsp;&nbsp; 🌿 Herbaceous Vegetation &nbsp;&nbsp; 🛣️ Highway &nbsp;&nbsp; 🏭 Industrial
+🐄 Pasture &nbsp;&nbsp; 🌳 Permanent Crop &nbsp;&nbsp; 🏘️ Residential &nbsp;&nbsp; 🏞️ River &nbsp;&nbsp; 🌊 Sea / Lake
+
+---
+
+## 📊 The dataset
+
+I used **EuroSAT** — a popular collection of satellite image tiles taken from the Sentinel-2 satellite.
+
+- **21,600** images for training (teaching the model)
+- **5,400** images for testing (checking how well it learned)
+- Every image resized to **64×64 pixels**
+
+---
+
+## 📁 What's in this repository?
+
+```
+.
+├── sentinel2_classification_pipeline.ipynb   <- The main program (downloads + classifies live images)
+├── ResNet_model_training.ipynb               <- How I trained the ResNet (93.15% accurate)
+├── CNN_model_training.ipynb                  <- How I trained the simpler CNN (80.72% accurate)
+├── ResNet_model/                             <- Saved ResNet model files
+└── CNN_model/                                <- Saved CNN model files
+```
+
+> 💡 **New here? Start with `sentinel2_classification_pipeline.ipynb`** — that's the main demo that ties everything together.
+
+---
+
+## 🛠️ Tools & libraries used
+
+- **PyTorch** — to build and train the AI models
+- **Planetary Computer + pystac-client + stackstac** — to download real satellite images
+- **NumPy, Pillow, Matplotlib, seaborn** — to handle and display images
+- **scikit-learn** — to measure accuracy
+
+---
+
+## ▶️ How to run it yourself
+
+**1. Install the required libraries:**
+
+```bash
+pip install torch torchvision numpy scikit-image pillow matplotlib seaborn scikit-learn \
+            pystac-client planetary-computer stackstac dask tqdm
+```
+
+**2. Open the main notebook** `sentinel2_classification_pipeline.ipynb` and set where and when you want to look:
+
+```python
+BBOX       = [77.5, 12.8, 78.0, 13.2]    # the map area: [left, bottom, right, top]
+TIME_RANGE = "2022-01-01/2022-01-31"      # the date range to search for photos
+MODEL_PATH = "ResNet_model/ResNet_classification_Model.pth"   # the trained model
+```
+
+**3. Run all the cells.** The notebook will fetch a satellite image, slice it up, classify each piece, and show you the labeled results. 🎉
+
+> 📍 *Tip:* The example coordinates point to the Bangalore area. Change `BBOX` to any place you like (you can grab coordinates from Google Maps).
+
+---
+
+## 💡 What I learned from this project
+
+- How to **pull real satellite data** from a live API instead of using pre-downloaded files.
+- How **ResNet's skip connections** make a real, measurable difference (93% vs 81%).
+- How to build a **complete pipeline** — from raw satellite data all the way to final predictions — not just a model in isolation.
+
+---
+
+## 🚀 Ideas for the future
+
+- Use **all the satellite's color bands** (not just red/green/blue) for even better accuracy.
+- Save the results as a **real map layer** you can open in QGIS or Google Earth.
+- Classify the **entire image** at once to make a full land-cover map.
+
+---
+
+## 👤 About me
+
+**Utkarsh Verma** — M.Tech Geoinformatics, IIT Kanpur
+
+🔗 [LinkedIn](https://linkedin.com/in/utkarsh-verma) &nbsp;|&nbsp; 💻 [GitHub](https://github.com/UtkarshVerma1998)
+
+---
+
+⭐ *If you found this project interesting, feel free to star the repo!*
 
